@@ -4,7 +4,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check app.js",
+    "check": "node --check server.js && node --check app.js && node --check \"api/[...path].js\"",
     "smoke:api": "node scripts/smoke-api.js",
     "smoke:browser": "node scripts/smoke-browser.js",
     "test": "npm run check && npm run smoke:api && npm run smoke:browser",

@@ -79,9 +79,25 @@ Then manually verify:
 
 See `PUBLIC-ACCESS.md` for the Cloudflare tunnel flow.
 
+## Deploy Without a Credit Card
+
+Use Vercel for hosting and Upstash Redis for shared message storage.
+
+Vercel environment variables:
+
+```text
+BVF_INVITE_CODE=bvf-2b2fd34dd6
+BVF_ADMIN_CODE=admin-e2a75af1dc5a4910
+BVF_SESSION_SECRET=make-this-a-long-random-string
+UPSTASH_REDIS_REST_URL=your-upstash-rest-url
+UPSTASH_REDIS_REST_TOKEN=your-upstash-rest-token
+```
+
+If Upstash Redis is not configured, the public site still loads, but shared posting falls back to each visitor's browser storage instead of a shared wall.
+
 ## Current Limits
 
-- Sessions are in memory, so login state resets when the server restarts.
-- Shared vibes are stored in `data/vibes.json`; this is simple and fine for small tests, but not a production database.
+- Local `node server.js` mode stores shared vibes in `data/vibes.json`.
+- Vercel mode needs Upstash Redis for a real shared wall.
 - Uploaded files in shared mode are converted to data URLs, so 5 MB files are still relatively heavy over slow networks.
 - Browser autoplay policies can block immediate music playback until the visitor first clicks or presses a key.
