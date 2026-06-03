@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: bad-vibes-forever
+    runtime: node
+    plan: free
+    buildCommand: npm install --omit=dev
+    startCommand: node server.js
+    envVars:
+      - key: BVF_INVITE_CODE
+        sync: false
+      - key: BVF_ADMIN_CODE
+        sync: false

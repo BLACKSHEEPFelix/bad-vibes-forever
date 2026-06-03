@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>bad vibes forever</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-theme="bad" data-note-color="fog">
+    <a class="skip-link" href="#vibe-form">跳到留言表单</a>
+
+    <canvas class="mood-canvas" id="moodCanvas" aria-hidden="true"></canvas>
+    <div class="paper-noise" aria-hidden="true"></div>
+
+    <div class="splash-screen" id="splashScreen" aria-hidden="true">
+      <div class="vibe-road">
+        <span class="road-lane lane-fog"></span>
+        <span class="road-lane lane-blue"></span>
+        <span class="road-lane lane-green"></span>
+        <span class="road-lane lane-violet"></span>
+      </div>
+      <div class="splash-sheep">
+        <img class="reference-sheep splash-sheep-art" src="./assets/images/black-sheep-noline.png" alt="">
+        <span class="reference-leg leg-front-near"></span>
+        <span class="reference-leg leg-front-far"></span>
+        <span class="reference-leg leg-back-near"></span>
+        <span class="reference-leg leg-back-far"></span>
+      </div>
+    </div>
+
+    <header class="site-header" aria-label="站点顶部">
+      <div>
+        <p class="eyebrow">vibe shelter / local prototype</p>
+        <h1 id="siteTitle">bad vibes forever</h1>
+      </div>
+
+      <div class="header-actions" aria-label="页面设置">
+        <form class="auth-panel" id="loginForm">
+          <span class="auth-status" id="authStatus">公开浏览</span>
+          <input id="inviteCode" type="password" name="code" autocomplete="current-password" placeholder="邀请口令" aria-label="邀请口令">
+          <button class="quiet-button" id="loginButton" type="submit">进入留言</button>
+          <button class="quiet-button" id="logoutButton" type="button" hidden>退出</button>
+        </form>
+        <button class="icon-button" id="motionToggle" type="button" aria-pressed="false" title="切换动态效果">
+          <span aria-hidden="true">~</span>
+          <span class="sr-only">切换动态效果</span>
+        </button>
+        <button class="theme-switch" id="themeSwitch" type="button" aria-pressed="false">
+          G
+        </button>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="intro-panel" aria-labelledby="introTitle">
+        <div class="title-stack">
+          <p class="mode-tag" id="modeTag">bad mode</p>
+          <h2 id="introTitle">把坏情绪放在这里，不需要立刻变好</h2>
+          <p id="introCopy">
+            选择一种 vibe，写下它的形状。系统会给出轻量安慰，其他人也可以用倾听、共鸣或一句话陪你停留。
+          </p>
+        </div>
+
+        <section class="wall-pulse" aria-label="墙面状态">
+          <div class="pulse-copy">
+            <p class="pulse-kicker" id="wallPulseKicker">墙面温度</p>
+            <div class="pulse-number">
+              <strong id="wallPulseValue">0</strong>
+              <span id="wallPulseLabel">bad vibes</span>
+            </div>
+            <p id="wallPulseLine">墙面暂时很安静。</p>
+          </div>
+          <div class="pulse-stats">
+            <span>
+              <strong id="wallPulseBad">0</strong>
+              <small>bad</small>
+            </span>
+            <span>
+              <strong id="wallPulseGood">0</strong>
+              <small>good</small>
+            </span>
+            <span>
+              <strong id="wallPulseReplies">0</strong>
+              <small>echo</small>
+            </span>
+          </div>
+          <img class="pulse-sheep" src="./assets/images/black-sheep-noline.png" alt="">
+        </section>
+
+        <div class="sound-panel" aria-hidden="true">
+          <audio id="bgmPlayer" loop></audio>
+        </div>
+      </section>
+
+      <section class="compose-panel" aria-labelledby="formTitle">
+        <h2 id="formTitle">say something</h2>
+        <form id="vibe-form">
+          <div class="form-grid">
+            <div class="category-field">
+              <span class="field-label">分类</span>
+              <select class="native-category" id="categoryInput" tabindex="-1" aria-hidden="true"></select>
+              <button class="category-trigger" id="categoryTrigger" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="categoryPanel">
+                <span id="categorySelected">孤独</span>
+              </button>
+              <div class="category-panel" id="categoryPanel" role="listbox" aria-label="分类选项" hidden></div>
+            </div>
+
+            <label>
+              <span>署名</span>
+              <input id="authorInput" type="text" maxlength="24" placeholder="匿名也可以">
+            </label>
+          </div>
+
+          <label class="textarea-field">
+            <span class="textarea-heading">
+              <span>我在听</span>
+              <output id="bodyCount" for="bodyInput" aria-live="polite">0/600</output>
+            </span>
+            <textarea id="bodyInput" rows="6" maxlength="600" required placeholder="what's your vibe today?"></textarea>
+          </label>
+
+          <fieldset class="color-field">
+            <legend>便签颜色</legend>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="fog" checked>
+              <span class="swatch swatch-fog"></span>
+              <span class="color-copy">
+                <span>雾灰</span>
+                <small>低电量，先放下</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="sad">
+              <span class="swatch swatch-sad"></span>
+              <span class="color-copy">
+                <span>悲伤蓝</span>
+                <small>悲伤，难过</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="sorrow">
+              <span class="swatch swatch-sorrow"></span>
+              <span class="color-copy">
+                <span>雨灰</span>
+                <small>难过，缓冲</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="blue">
+              <span class="swatch swatch-blue"></span>
+              <span class="color-copy">
+                <span>冷蓝</span>
+                <small>焦虑降温</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="anger">
+              <span class="swatch swatch-anger"></span>
+              <span class="color-copy">
+                <span>烬红</span>
+                <small>愤怒，边界</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="violet">
+              <span class="swatch swatch-violet"></span>
+              <span class="color-copy">
+                <span>雾紫</span>
+                <small>迷茫，遗憾</small>
+              </span>
+            </label>
+            <label data-vibe-theme="bad">
+              <input type="radio" name="noteColor" value="regret">
+              <span class="swatch swatch-regret"></span>
+              <span class="color-copy">
+                <span>暮棕</span>
+                <small>后悔，复盘</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="green">
+              <span class="swatch swatch-green"></span>
+              <span class="color-copy">
+                <span>冷绿</span>
+                <small>恢复，被接住</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="joy">
+              <span class="swatch swatch-joy"></span>
+              <span class="color-copy">
+                <span>日光黄</span>
+                <small>开心，兴奋</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="happy">
+              <span class="swatch swatch-happy"></span>
+              <span class="color-copy">
+                <span>幸福粉</span>
+                <small>幸福，激动</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="calm">
+              <span class="swatch swatch-calm"></span>
+              <span class="color-copy">
+                <span>平静绿</span>
+                <small>平静，释然</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="excited">
+              <span class="swatch swatch-excited"></span>
+              <span class="color-copy">
+                <span>橙光</span>
+                <small>兴奋，行动</small>
+              </span>
+            </label>
+            <label data-vibe-theme="good">
+              <input type="radio" name="noteColor" value="pulse">
+              <span class="swatch swatch-pulse"></span>
+              <span class="color-copy">
+                <span>心跳玫</span>
+                <small>激动，心动</small>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="attachment-grid">
+            <label>
+              <span>图片附件</span>
+              <input id="imageInput" type="file" accept="image/*">
+            </label>
+
+            <label>
+              <span>歌曲附件</span>
+              <input id="audioInput" type="file" accept="audio/*">
+            </label>
+
+            <label>
+              <span>图片或歌曲链接</span>
+              <input id="linkInput" type="url" placeholder="https://...">
+            </label>
+          </div>
+
+          <div class="form-footer">
+            <p id="safetyNote">
+              这里不是医疗服务。如果你正处在危险中，请马上联系身边可信的人或当地紧急求助渠道。
+            </p>
+            <button class="submit-button" type="submit">发布 vibe</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="feed-panel" aria-labelledby="feedTitle">
+        <div class="feed-header">
+          <div>
+            <p class="eyebrow">live wall</p>
+            <h2 id="feedTitle">ALL VIBES</h2>
+          </div>
+          <button class="quiet-button" id="clearButton" type="button">清空本地留言</button>
+        </div>
+
+        <div class="feed-list" id="feedList" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <aside class="climbing-sheep" id="sideSheep" aria-label="黑色小羊互动区">
+      <p class="sheep-companion" id="sheepCompanion" role="status" aria-live="polite"></p>
+      <div class="sheep-cloud-menu" aria-label="小羊互动选项">
+        <button class="cloud-option" type="button" data-sheep-action="pet">摸摸头</button>
+        <button class="cloud-option" type="button" data-sheep-action="jump">蹦一下</button>
+        <button class="cloud-option" type="button" data-sheep-action="calm">安静陪伴</button>
+      </div>
+      <div class="side-sheep-figure" aria-hidden="true">
+        <img class="reference-sheep side-sheep-art" src="./assets/images/black-sheep-noline.png" alt="">
+        <span class="reference-leg leg-front-near"></span>
+        <span class="reference-leg leg-front-far"></span>
+        <span class="reference-leg leg-back-near"></span>
+        <span class="reference-leg leg-back-far"></span>
+      </div>
+    </aside>
+
+    <div class="detail-overlay" id="detailOverlay" hidden>
+      <section class="detail-surface" role="dialog" aria-modal="true" aria-labelledby="detailTitle">
+        <button class="detail-close" id="detailClose" type="button" aria-label="关闭" title="关闭">×</button>
+        <div id="detailContent"></div>
+      </section>
+    </div>
+
+    <template id="vibeTemplate">
+      <article class="vibe-card">
+        <header class="card-header">
+          <div>
+            <p class="card-category"></p>
+            <h3 class="card-author"></h3>
+          </div>
+          <div class="card-meta">
+            <time></time>
+            <button class="card-flip" type="button" aria-pressed="false">翻面</button>
+            <button class="card-open" type="button">查看</button>
+          </div>
+        </header>
+        <p class="card-body"></p>
+        <div class="image-zone media-zone"></div>
+        <div class="audio-zone media-zone"></div>
+        <section class="card-back" aria-hidden="true">
+          <strong>智能回复留言</strong>
+          <p></p>
+          <strong>路人留言</strong>
+          <div class="back-reply-list"></div>
+        </section>
+        <div class="auto-reply"></div>
+        <p class="reaction-help">符号代表收到的回应次数，点击按钮可以增加一次回应。</p>
+        <div class="reaction-row" aria-label="互动反应"></div>
+        <form class="reply-form">
+          <label>
+            <span>回应一句</span>
+            <input type="text" maxlength="220" placeholder="我在听，可以慢慢说。">
+          </label>
+          <button type="submit">发送</button>
+        </form>
+        <div class="reply-list"></div>
+      </article>
+    </template>
+
+    <script src="./app.js"></script>
+  </body>
+</html>

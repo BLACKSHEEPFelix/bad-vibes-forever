@@ -1,0 +1,16 @@
+{
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check app.js",
+    "smoke:api": "node scripts/smoke-api.js",
+    "smoke:browser": "node scripts/smoke-browser.js",
+    "test": "npm run check && npm run smoke:api && npm run smoke:browser",
+    "tunnel": "call \"C:\\Program Files (x86)\\cloudflared\\cloudflared.exe\" tunnel --url http://localhost:3000"
+  },
+  "devDependencies": {
+    "playwright": "^1.53.0"
+  }
+}

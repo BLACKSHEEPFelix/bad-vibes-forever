@@ -1,0 +1,8 @@
+chrome-profile/
+chrome-test-profile/
+chrome-pdf-profile/
+chrome-ui-profile/
+tmp/
+bvf-screenshot.png
+data/
+node_modules/
