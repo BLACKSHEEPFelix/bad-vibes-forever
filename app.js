@@ -825,13 +825,26 @@ function appendNeteasePlayer(zone, attachment) {
     return;
   }
 
+  const embed = document.createElement("div");
+  embed.className = "netease-embed";
+
   const iframe = document.createElement("iframe");
   iframe.className = "netease-player";
   iframe.title = "NetEase Cloud Music player";
   iframe.loading = "lazy";
-  iframe.allow = "encrypted-media";
+  iframe.allow = "autoplay; encrypted-media";
+  iframe.scrolling = "no";
   iframe.src = createNeteasePlayerUrl(songId);
-  zone.append(iframe);
+
+  const openLink = document.createElement("a");
+  openLink.className = "netease-open";
+  openLink.href = attachment.songUrl || createNeteaseSongUrl(songId);
+  openLink.target = "_blank";
+  openLink.rel = "noreferrer";
+  openLink.textContent = "打开网易云播放";
+
+  embed.append(iframe, openLink);
+  zone.append(embed);
 }
 
 function appendLink(zone, url) {
@@ -854,7 +867,8 @@ function createLinkAttachment(rawValue) {
     return {
       url: createNeteasePlayerUrl(neteaseSongId),
       type: "netease",
-      songId: neteaseSongId
+      songId: neteaseSongId,
+      songUrl: createNeteaseSongUrl(neteaseSongId)
     };
   }
 
@@ -887,6 +901,10 @@ function extractNeteaseSongId(rawValue) {
 
 function createNeteasePlayerUrl(songId) {
   return `https://music.163.com/outchain/player?type=2&id=${encodeURIComponent(songId)}&auto=0&height=66`;
+}
+
+function createNeteaseSongUrl(songId) {
+  return `https://music.163.com/#/song?id=${encodeURIComponent(songId)}`;
 }
 
 function renderReplies(node, vibe) {

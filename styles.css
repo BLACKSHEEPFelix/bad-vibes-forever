@@ -1806,9 +1806,30 @@ body[data-theme="good"] .color-field label[data-vibe-theme="bad"] {
   border: 0;
 }
 
+.netease-embed {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .netease-player {
   height: 86px;
   overflow: hidden;
+}
+
+.netease-open {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--accent-ink);
+  padding: 0.48rem 0.72rem;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-decoration: none;
+  box-shadow: 2px 2px 0 var(--ink);
 }
 
 .feed-list .image-zone {
