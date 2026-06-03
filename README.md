@@ -1,6 +1,6 @@
 # Bad Vibes Forever
 
-A small local-first vibe wall for saving bad and good moods, with invite-only posting, reactions, replies, media attachments, and temporary public sharing through a Cloudflare tunnel.
+A small local-first vibe wall for saving bad and good moods, with invite-only posting, reactions, replies, media attachments, and public/static or temporary shared hosting options.
 
 ## What is Done
 
@@ -9,7 +9,8 @@ A small local-first vibe wall for saving bad and good moods, with invite-only po
 - Shared server mode with invite-code posting and admin-only clearing.
 - Optional image, audio, and link attachments.
 - Image-backed preview cards, audio previews, and detail views ordered as image, text, then audio.
-- Temporary public access instructions in `PUBLIC-ACCESS.md`.
+- Static GitHub Pages publishing through GitHub Actions.
+- Temporary shared public access instructions in `PUBLIC-ACCESS.md`.
 
 ## Start Locally
 
@@ -75,13 +76,31 @@ Then manually verify:
 - Shared-mode files are sent as data URLs, so very large posts are rejected before they are saved.
 - Plain links can still be used for externally hosted images or audio.
 
-## Public Test Link
+## Public Static Link
+
+This repo includes a GitHub Pages workflow at `.github/workflows/pages.yml`.
+
+After pushing to `main`, enable Pages in GitHub:
+
+```text
+Settings -> Pages -> Build and deployment -> Source: GitHub Actions
+```
+
+The public static URL is:
+
+```text
+https://blacksheepfelix.github.io/bad-vibes-forever/
+```
+
+This version is public and does not need a credit card or phone verification. It is static-only: visitors can use the app, but vibes are saved in each visitor's own browser storage unless a backend is added.
+
+## Temporary Shared Link
 
 See `PUBLIC-ACCESS.md` for the Cloudflare tunnel flow.
 
 ## Deploy Without a Credit Card
 
-Use Vercel for hosting and Upstash Redis for shared message storage.
+Use Vercel for hosting and Upstash Redis for shared message storage if account verification is available.
 
 Vercel environment variables:
 
