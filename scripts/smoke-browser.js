@@ -50,8 +50,10 @@ async function main() {
 
   await page.fill("#authorInput", "browser-smoke");
   await page.fill("#bodyInput", "browser smoke vibe");
+  await page.fill("#linkInput", "https://music.163.com/#/song?id=1824045033");
   await page.click(".submit-button");
   await page.waitForSelector(".vibe-card >> text=browser smoke vibe", { timeout: 5000 });
+  await page.waitForSelector("iframe.netease-player[src*='id=1824045033']", { timeout: 5000 });
 
   await page.click(".card-flip");
   await page.waitForSelector(".card-back >> text=智能回复留言", { timeout: 5000 });

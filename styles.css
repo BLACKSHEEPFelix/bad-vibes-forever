@@ -1801,6 +1801,16 @@ body[data-theme="good"] .color-field label[data-vibe-theme="bad"] {
   width: 100%;
 }
 
+.media-zone iframe {
+  width: 100%;
+  border: 0;
+}
+
+.netease-player {
+  height: 86px;
+  overflow: hidden;
+}
+
 .feed-list .image-zone {
   display: none;
 }

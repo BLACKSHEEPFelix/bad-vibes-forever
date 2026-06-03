@@ -544,7 +544,7 @@ async function submitVibe(event) {
   }
 
   const link = elements.linkInput.value.trim();
-  if (link) linkAttachments.push({ url: link, type: inferLinkType(link) });
+  if (link) linkAttachments.push(createLinkAttachment(link));
 
   const vibe = {
     id: crypto.randomUUID(),
@@ -642,7 +642,7 @@ async function renderFeed() {
     node.querySelector(".reply-list").hidden = true;
     bindCardEvents(node, vibe, { compact: true });
     node.addEventListener("click", async (event) => {
-      if (event.target.closest("button, input, a, audio")) return;
+      if (event.target.closest("button, input, a, audio, iframe")) return;
       markTapped(node);
       await wait(90);
       openVibeModal(vibe.id);
@@ -782,6 +782,8 @@ async function renderAudioMedia(zone, vibe, options = {}) {
   for (const attachment of vibe.linkAttachments) {
     if (attachment.type === "audio") {
       appendAudio(zone, attachment.url);
+    } else if (attachment.type === "netease" || extractNeteaseSongId(attachment.url)) {
+      appendNeteasePlayer(zone, attachment);
     } else if (options.includeLinks && attachment.type === "link") {
       appendLink(zone, attachment.url);
     }
@@ -816,6 +818,22 @@ function appendAudio(zone, url, revokeOnLoad = false) {
   zone.append(audio);
 }
 
+function appendNeteasePlayer(zone, attachment) {
+  const songId = attachment.songId || extractNeteaseSongId(attachment.url);
+  if (!songId) {
+    appendLink(zone, attachment.url);
+    return;
+  }
+
+  const iframe = document.createElement("iframe");
+  iframe.className = "netease-player";
+  iframe.title = "NetEase Cloud Music player";
+  iframe.loading = "lazy";
+  iframe.allow = "encrypted-media";
+  iframe.src = createNeteasePlayerUrl(songId);
+  zone.append(iframe);
+}
+
 function appendLink(zone, url) {
   const link = document.createElement("a");
   link.className = "media-link";
@@ -828,6 +846,47 @@ function appendLink(zone, url) {
 
 function escapeCssUrl(url) {
   return String(url).replace(/["\\\n\r]/g, "\\$&");
+}
+
+function createLinkAttachment(rawValue) {
+  const neteaseSongId = extractNeteaseSongId(rawValue);
+  if (neteaseSongId) {
+    return {
+      url: createNeteasePlayerUrl(neteaseSongId),
+      type: "netease",
+      songId: neteaseSongId
+    };
+  }
+
+  return { url: rawValue, type: inferLinkType(rawValue) };
+}
+
+function extractNeteaseSongId(rawValue) {
+  const value = String(rawValue || "").trim();
+  if (/^\d{3,16}$/.test(value)) return value;
+
+  try {
+    const url = new URL(value);
+    const directId = url.searchParams.get("id");
+    if (/^\d{3,16}$/.test(directId || "")) return directId;
+
+    if (url.hash) {
+      const hashUrl = new URL(url.hash.replace(/^#\/?/, "/"), url.origin);
+      const hashId = hashUrl.searchParams.get("id");
+      if (/^\d{3,16}$/.test(hashId || "")) return hashId;
+    }
+
+    const pathId = url.pathname.match(/\/song\/(\d{3,16})(?:\/|$)/)?.[1];
+    if (pathId) return pathId;
+  } catch {
+    return "";
+  }
+
+  return "";
+}
+
+function createNeteasePlayerUrl(songId) {
+  return `https://music.163.com/outchain/player?type=2&id=${encodeURIComponent(songId)}&auto=0&height=66`;
 }
 
 function renderReplies(node, vibe) {
@@ -1193,6 +1252,7 @@ function getMedia(id) {
 }
 
 function inferLinkType(url) {
+  if (extractNeteaseSongId(url)) return "netease";
   const lower = url.toLowerCase();
   if (lower.startsWith("data:image/")) return "image";
   if (lower.startsWith("data:audio/")) return "audio";

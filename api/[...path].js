@@ -280,15 +280,16 @@ function sanitizeVibe(input) {
 
 function sanitizeAttachment(attachment) {
   if (!attachment || typeof attachment !== "object") return null;
-  const type = ["image", "audio", "link"].includes(attachment.type) ? attachment.type : "link";
+  const type = ["image", "audio", "link", "netease"].includes(attachment.type) ? attachment.type : "link";
   const rawUrl = String(attachment.url || "").trim();
-  if (type !== "link" && isDataUrl(rawUrl) && dataUrlByteLength(rawUrl) > MAX_ATTACHMENT_BYTES) {
+  const isExternalLink = type === "link" || type === "netease";
+  if (!isExternalLink && isDataUrl(rawUrl) && dataUrlByteLength(rawUrl) > MAX_ATTACHMENT_BYTES) {
     throw publicError(400, "attachment_too_large");
   }
-  if (type === "link" && rawUrl.length > 2048) {
+  if (isExternalLink && rawUrl.length > 2048) {
     throw publicError(400, "link_too_long");
   }
-  const maxLength = type === "link" ? 2048 : dataUrlMaxLength(MAX_ATTACHMENT_BYTES);
+  const maxLength = isExternalLink ? 2048 : dataUrlMaxLength(MAX_ATTACHMENT_BYTES);
   const url = cleanText(rawUrl, maxLength);
   return url ? { url, type } : null;
 }
