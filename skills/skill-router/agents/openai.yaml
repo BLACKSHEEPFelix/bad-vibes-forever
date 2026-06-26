@@ -1,0 +1,4 @@
+interface:
+  display_name: "Skill Router"
+  short_description: "Selects and chains the best installed skills."
+  default_prompt: "Use $skill-router to choose the best installed skills for this task, explain the routing briefly, then execute."
