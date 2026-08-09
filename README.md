@@ -1,6 +1,10 @@
 # Bad Vibes Forever
 
-A small local-first vibe wall for saving bad and good moods, with invite-only posting, reactions, replies, media attachments, and public/static or temporary shared hosting options.
+Bad Vibes Forever is an interactive emotional message wall for recording bad vibes and good vibes through text, images, audio, and NetEase Cloud Music links.
+
+The project focuses on expressive frontend interaction: animated entry experience, theme switching, mood categories, media-backed message cards, card flipping, smart comfort replies, passerby replies, and responsive layout. It is built with vanilla HTML/CSS/JavaScript, with local-first storage through `localStorage` and IndexedDB, plus an optional Node.js API for invite-only shared posting and admin management.
+
+Live demo: https://blacksheepfelix.github.io/bad-vibes-forever/
 
 ## What is Done
 
@@ -8,6 +12,7 @@ A small local-first vibe wall for saving bad and good moods, with invite-only po
 - Local browser fallback with `localStorage` and IndexedDB media storage.
 - Shared server mode with invite-code posting and admin-only clearing.
 - Optional image, audio, and link attachments.
+- NetEase Cloud Music link embedding with an external playback fallback.
 - Image-backed preview cards, audio previews, and detail views ordered as image, text, then audio.
 - Static GitHub Pages publishing through GitHub Actions.
 - Temporary shared public access instructions in `PUBLIC-ACCESS.md`.
